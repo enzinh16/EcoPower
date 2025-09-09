@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dispositivo</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <h1 id="nome"></h1>
+    <p><strong>Consumo:</strong> <span id="consumo"></span></p>
+    <p><strong>Prioridade:</strong> <span id="prioridade"></span></p>
+
+    <h2>Editar</h2>
+    <label>Nome: <input id="inputNome"></label>
+    <button id="salvar">Salvar</button>
+
+    <script>
+        let dispositivoAtual;
+
+        // pega o ID da URL
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        fetch("../dispositivos/dispositivos.json")
+            .then(res => res.json())
+            .then(dispositivos => {
+                dispositivoAtual = dispositivos.find(d => d.id == id);
+                if (dispositivoAtual) {
+                    document.getElementById("nome").textContent = dispositivoAtual.nome;
+                    document.getElementById("consumo").textContent = dispositivoAtual.consumo;
+                    document.getElementById("prioridade").textContent = dispositivoAtual.prioridade;
+                    document.getElementById("inputNome").value = dispositivoAtual.nome;
+                }
+            });
+
+        document.getElementById("salvar").addEventListener("click", () => {
+            const novoNome = document.getElementById("inputNome").value;
+            dispositivoAtual.nome = novoNome;
+
+            // atualiza na tela
+            document.getElementById("nome").textContent = novoNome;
+
+            // salva no navegador (não altera o arquivo JSON de verdade!)
+            localStorage.setItem("dispositivo_" + dispositivoAtual.id, JSON.stringify(dispositivoAtual));
+            alert("Nome atualizado (salvo no navegador).");
+        });
+    </script>
+
+    <a href="dispositivos.html">Voltar para os dispositivos</a>
+</body>
+
+</html>

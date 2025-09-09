@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispositivos</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+</head>
+
+<body>
+
+    <div class="header">
+        <img src="../images/logo.png" alt="EcoPowerMain Logo" title="EcoPowerMain Logo">
+
+        <h1 class="inicio1" id="inicio">EcoPowerMain</h1>
+    </div>
+
+    <header>
+        <div class="opcoes">
+            <a href="../../index.html">Início</a>
+
+            <a href="dispositivos.html">Dispositivos</a>
+
+            <a href="conexoes.html">Conexões</a>
+        </div>
+    </header>
+
+    <h1>Dispositivos</h1>
+    <h2>Lista de dispositivos conectados:</h2>
+
+    <ul id="dispositivos"></ul>
+
+    <script>
+        let divDispositivos = document.getElementById('dispositivos');
+        fetch("../dispositivos/dispositivos.json").then((response) => {
+            response.json().then((dispositivos) => {
+                dispositivos.map((dispositivo) => {
+                    divDispositivos.innerHTML += `<a href= "dispositivo.html?id=${dispositivo.id}">${dispositivo.nome}</a>`;
+                })
+            })
+        })
+    </script>
+
+</body>
+
+</html>

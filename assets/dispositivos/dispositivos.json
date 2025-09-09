@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "nome": "ar condicionado",
+        "prioridade": 1,
+        "consumo": 1500
+    },
+    {
+        "id": 2,
+        "nome": "geladeira",
+        "prioridade": 2,
+        "consumo": 500
+    },
+    {
+        "id": 3,
+        "nome": "televisao",
+        "prioridade": 2,
+        "consumo": 200
+    },
+    {
+        "id": 4,
+        "nome": "computador",
+        "prioridade": 3,
+        "consumo": 300
+    }
+]
