@@ -25,27 +25,6 @@
             <h3>Bateria</h3>
             <p id="bateria">—</p>
         </div>
-        <div class="kpi">
-            <h3>Detalhes da Usina</h3>
-            <p id="nome-usina">Nome: —</p>
-            <p id="capacidade-usina">Capacidade: —</p>
-            <p id="endereco-usina">Endereço: —</p>
-        </div>
-        <div class="kpi">
-            <h3>Detalhes da Bateria 1</h3>
-            <p id="bateria1-sn">SN: —</p>
-            <p id="bateria1-soc">SOC: —</p>
-        </div>
-        <div class="kpi">
-            <h3>Detalhes da Bateria 2</h3>
-            <p id="bateria2-sn">SN: —</p>
-            <p id="bateria2-soc">SOC: —</p>
-        </div>
-        <div class="kpi">
-            <h3>Financeiro</h3>
-            <p id="receita-total">Receita Total: —</p>
-            <p id="potencia-total">Potência Total: —</p>
-        </div>
     </div>
 
     <canvas id="graficoPac" width="600" height="300"></canvas>
@@ -55,7 +34,7 @@
 
     <script>
         async function carregarDados() {
-            const fixedDate = "2025-09-07"; // <--- Mude esta linha para uma data que você saiba que tem dados
+            const fixedDate = "2025-09-07"; // Data fixa para teste
             const urlPac = `http://localhost:5000/dados?sn=5010KETU229W6177&col=Pac&date=${fixedDate}`;
             const urlCbattery1 = `http://localhost:5000/dados?sn=5010KETU229W6177&col=Cbattery1&date=${fixedDate}`;
             const urlEday = `http://localhost:5000/dados?sn=5010KETU229W6177&col=Eday&date=${fixedDate}`;
@@ -76,13 +55,13 @@
                 const payloadSoc = await respSoc.json();
                 const dfSoc = payloadSoc.data?.items || payloadSoc.data?.column1 || [];
 
-                // Converte tempo e valores, priorizando 'Pac' ou 'column'
+                // Converte tempo e valores
                 const times = dfPac.map(d => new Date(d.time || d.date));
                 const pac = dfPac.map(d => d.Pac ?? d.column ?? null);
                 const eday = dfEday.map(d => d.Eday ?? d.column ?? null);
                 const soc = dfSoc.map(d => d.Cbattery1 ?? d.column ?? null);
 
-                // Combina os dados para o download do CSV
+                // Combina os dados para o CSV
                 const combinedData = dfPac.map((d, i) => ({
                     time: times[i],
                     Pac: pac[i],
@@ -132,7 +111,7 @@
                     options: { scales: { x: { type: "time", time: { unit: "hour" } } } }
                 });
 
-                // Salvar CSV em memória
+                // Salvar CSV
                 window._csv = "time,Pac,Eday,Cbattery1\n" +
                     combinedData.map(d => `${d.time.toISOString()},${d.Pac || ""},${d.Eday || ""},${d.Cbattery1 || ""}`).join("\n");
             } catch (e) {
@@ -140,44 +119,6 @@
                 alert("Erro ao carregar os dados. Verifique se o servidor Python está rodando e se as credenciais estão corretas.");
             }
         }
-
-        async function carregarDetalhesUsina() {
-            const plantId = "7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a"; // Substitua pelo ID da usina
-            const urlDetalhes = `http://localhost:5000/detalhes-usina?plantId=${plantId}`;
-
-            try {
-                const respDetalhes = await fetch(urlDetalhes);
-                const payloadDetalhes = await respDetalhes.json();
-
-                if (payloadDetalhes.data) {
-                    const info = payloadDetalhes.data.info;
-                    const kpi = payloadDetalhes.data.kpi;
-                    const soc_data = payloadDetalhes.data.soc;
-
-                    document.getElementById("nome-usina").innerText = `Nome: ${info.stationname || 'N/A'}`;
-                    document.getElementById("capacidade-usina").innerText = `Capacidade: ${info.capacity || 'N/A'} kWp`;
-                    document.getElementById("endereco-usina").innerText = `Endereço: ${info.address || 'N/A'}`;
-
-                    if (soc_data && soc_data.length > 0) {
-                        document.getElementById("bateria1-sn").innerText = `SN: ${soc_data[0].sn || 'N/A'}`;
-                        document.getElementById("bateria1-soc").innerText = `SOC: ${soc_data[0].power || 'N/A'}%`;
-                    }
-                    if (soc_data && soc_data.length > 1) {
-                        document.getElementById("bateria2-sn").innerText = `SN: ${soc_data[1].sn || 'N/A'}`;
-                        document.getElementById("bateria2-soc").innerText = `SOC: ${soc_data[1].power || 'N/A'}%`;
-                    }
-                    
-                    document.getElementById("receita-total").innerText = `R$: ${kpi.total_income || 'N/A'}`;
-                    document.getElementById("potencia-total").innerText = `${kpi.total_power || 'N/A'} kW`;
-
-                } else {
-                    console.error("Dados da usina não encontrados:", payloadDetalhes);
-                }
-            } catch (e) {
-                console.error("Erro ao carregar os detalhes da usina:", e);
-            }
-        }
-
 
         function baixarCSV() {
             if (!window._csv) {
@@ -193,10 +134,7 @@
             URL.revokeObjectURL(url);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            carregarDados();
-            carregarDetalhesUsina();
-        });
+        document.addEventListener('DOMContentLoaded', carregarDados);
     </script>
 
 </body>
