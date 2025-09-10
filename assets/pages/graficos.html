@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Gráfico JSON</title>
+    <title>EcoPower</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -11,8 +11,9 @@
 
 <body>
 
-    <div class ="header">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="EcoPowerMain Logo" title="EcoPowerMain Logo">
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="EcoPowerMain Logo"
+            title="EcoPowerMain Logo">
 
         <h1 id="inicio">EcoPower</h1>
     </div>
@@ -31,9 +32,23 @@
 
     <h1>Gráficos</h1>
 
-    <label for="dataFiltro">Escolha a data:</label>
-    <input type="date" id="dataFiltro" value="2025-09-09">
-    <button id="btnFiltrar">Filtrar</button>
+    <div>
+        <label>
+            <input type="radio" name="inversor" value="53600ERN238W0001" checked>
+            Inversor 1
+        </label>
+
+        <label>
+            <input type="radio" name="inversor" value="93600EBN232W0002">
+            Inversor 2
+        </label>
+    </div>
+
+    <div>
+        <label for="dataFiltro">Escolha a data:</label>
+        <input type="date" id="dataFiltro" value="2025-09-09">
+        <button id="btnFiltrar">Filtrar</button>
+    </div>
 
     <div id="detalhes">Carregando...</div>
 
@@ -44,12 +59,13 @@
     <div>
         <canvas id="graficoPac" width="800" height="150"></canvas>
     </div>
-    
+
     <div>
         <canvas id="graficoEday" width="800" height="150"></canvas>
     </div>
-    
+
     <script src="{{ url_for('static', filename='js/graficos.js') }}"></script>
-    
+
 </body>
+
 </html>

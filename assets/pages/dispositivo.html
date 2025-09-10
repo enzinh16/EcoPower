@@ -13,7 +13,8 @@
     <p><strong>Prioridade:</strong> <span id="prioridade"></span></p>
 
     <h2>Editar</h2>
-    <label>Nome: <input id="inputNome"></label>
+    <label>Nome: <input id="inputNome"></label><br><br>
+    <label>Prioridade: <input id="inputPrioridade" type="number" min="1"></label><br><br>
     <button id="salvar">Salvar</button>
 
     <script>
@@ -32,19 +33,31 @@
                     document.getElementById("consumo").textContent = dispositivoAtual.consumo;
                     document.getElementById("prioridade").textContent = dispositivoAtual.prioridade;
                     document.getElementById("inputNome").value = dispositivoAtual.nome;
+                    document.getElementById("inputPrioridade").value = dispositivoAtual.prioridade;
                 }
             });
 
-        document.getElementById("salvar").addEventListener("click", () => {
+        document.getElementById("salvar").addEventListener("click", async () => {
             const novoNome = document.getElementById("inputNome").value;
+            const novaPrioridade = parseInt(document.getElementById("inputPrioridade").value);
+
+            // atualiza objeto atual
             dispositivoAtual.nome = novoNome;
+            dispositivoAtual.prioridade = novaPrioridade;
 
             // atualiza na tela
             document.getElementById("nome").textContent = novoNome;
+            document.getElementById("prioridade").textContent = novaPrioridade;
 
-            // salva no navegador (não altera o arquivo JSON de verdade!)
-            localStorage.setItem("dispositivo_" + dispositivoAtual.id, JSON.stringify(dispositivoAtual));
-            alert("Nome atualizado (salvo no navegador).");
+            // envia para o backend salvar no arquivo
+            const resp = await fetch("/atualizar-json", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dispositivoAtual)
+            });
+
+            const resultado = await resp.json();
+            alert(resultado.mensagem);
         });
     </script>
 
