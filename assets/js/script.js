@@ -1,3 +1,4 @@
+// Primeiro script: carregarDados
 async function carregarDados() {
     try {
         const resposta = await fetch('http://localhost:5000/detalhes-usina?plantId=7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a');
@@ -8,7 +9,6 @@ async function carregarDados() {
 
         const container = document.getElementById('conteudo');
 
-        // Verifica se todos os dados necessários estão disponíveis
         if (
             dados?.data?.info?.address &&
             dados?.data?.info?.stationname &&
@@ -20,7 +20,6 @@ async function carregarDados() {
             dados?.data?.soc?.[1]?.sn &&
             dados?.data?.soc?.[1]?.power !== undefined
         ) {
-            // Só entra aqui quando todos os campos existirem
             container.innerHTML = `
             <div class="kpis">
                 <div class="kpi">
@@ -44,9 +43,13 @@ async function carregarDados() {
                 </div>
             </div>
 
-                <p><strong>Latitude:</strong> ${dados2.data.info.latitude}</p>
-                <p><strong>Longitude:</strong> ${dados2.data.info.longitude}</p>
+            <p><strong>Latitude:</strong> ${dados2.data.info.latitude}</p>
+            <p><strong>Longitude:</strong> ${dados2.data.info.longitude}</p>
             `;
+
+            // ✅ Chama a previsão do tempo somente depois de carregar os dados
+            const plantId = dados.data.info.powerstation_id;
+            carregarPrevisao(plantId);
 
         } else {
             console.log("⏳ Dados ainda incompletos, aguardando...");
@@ -55,6 +58,34 @@ async function carregarDados() {
 
     } catch (erro) {
         console.error('Erro ao buscar ou processar o JSON:', erro);
+    }
+}
+
+// Segundo script: carregarPrevisao
+async function carregarPrevisao(plantId) {
+    try {
+        const response = await fetch(`http://localhost:5000/previsao-tempo?plantId=${plantId}`);
+        if (!response.ok) throw new Error("Erro ao buscar previsão do tempo");
+
+        const data = await response.json();
+
+        const previsaoDiv = document.getElementById("previsao");
+        if (data.previsao && data.previsao.weather) {
+            const temp = data.previsao.main.temp;
+            const descricao = data.previsao.weather[0].description;
+
+            previsaoDiv.innerHTML = `
+                <h3>Previsão do Tempo</h3>
+                <p><strong>Temperatura:</strong> ${temp} °C</p>
+                <p><strong>Condição:</strong> ${descricao}</p>
+            `;
+        } else {
+            previsaoDiv.innerHTML = "<p>Não foi possível carregar a previsão.</p>";
+        }
+    } catch (error) {
+        console.error(error);
+        document.getElementById("previsao").innerHTML =
+            "<p>Erro ao carregar previsão do tempo.</p>";
     }
 }
 

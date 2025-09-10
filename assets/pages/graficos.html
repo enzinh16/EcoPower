@@ -6,29 +6,31 @@
     <title>GoodWe Assistant - HTML</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
-    <div class="header">
-        <img src="../images/logo.png" alt="EcoPowerMain Logo" title="EcoPowerMain Logo">
 
-        <h1 id="inicio">EcoPowerMain</h1>
+    <div class ="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="EcoPowerMain Logo" title="EcoPowerMain Logo">
+
+        <h1 id="inicio">EcoPower</h1>
     </div>
 
     <header>
         <div class="opcoes">
-            <a href="../../index.html">Início</a>
+            <a href="/">Início</a>
 
-            <a href="dispositivos.html">Dispositivos</a>
+            <a href="/dispositivos">Dispositivos</a>
 
-            <a href="conexoes.html">Conexões</a>
+            <a href="/conexoes">Conexões</a>
 
-            <a href="graficos.html">Gráficos</a>
+            <a href="/graficos">Gráficos</a>
         </div>
     </header>
 
-    <h1>⚡ GoodWe Assistant — HTML</h1>
+    <h1>Gráficos</h1>
 
     <div class="kpis">
         <div class="kpi">

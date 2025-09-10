@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dispositivo</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
 
-        fetch("../dispositivos/dispositivos.json")
+        fetch("/ler-json")
             .then(res => res.json())
             .then(dispositivos => {
                 dispositivoAtual = dispositivos.find(d => d.id == id);
@@ -48,7 +48,7 @@
         });
     </script>
 
-    <a href="dispositivos.html">Voltar para os dispositivos</a>
+    <a href="/dispositivos">Voltar para os dispositivos</a>
 </body>
 
 </html>

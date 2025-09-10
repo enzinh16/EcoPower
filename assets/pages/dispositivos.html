@@ -6,27 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dispositivos</title>
 
-    <link rel="stylesheet" href="/assets/css/style.css">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-    <div class="header">
-        <img src="../images/logo.png" alt="EcoPowerMain Logo" title="EcoPowerMain Logo">
+    <div class ="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="EcoPowerMain Logo" title="EcoPowerMain Logo">
 
-        <h1 class="inicio1" id="inicio">EcoPowerMain</h1>
+        <h1 id="inicio">EcoPower</h1>
     </div>
 
     <header>
         <div class="opcoes">
-            <a href="../../index.html">Início</a>
+            <a href="/">Início</a>
 
-            <a href="dispositivos.html">Dispositivos</a>
+            <a href="/dispositivos">Dispositivos</a>
 
-            <a href="conexoes.html">Conexões</a>
+            <a href="/conexoes">Conexões</a>
 
-            <a href="graficos.html">Gráficos</a>
+            <a href="/graficos">Gráficos</a>
         </div>
     </header>
 
@@ -37,10 +36,10 @@
 
     <script>
         let divDispositivos = document.getElementById('dispositivos');
-        fetch("../dispositivos/dispositivos.json").then((response) => {
+        fetch("/ler-json").then((response) => {
             response.json().then((dispositivos) => {
                 dispositivos.map((dispositivo) => {
-                    divDispositivos.innerHTML += `<a href= "dispositivo.html?id=${dispositivo.id}">${dispositivo.nome}</a>`;
+                    divDispositivos.innerHTML += `<a href= "dispositivo?id=${dispositivo.id}">${dispositivo.nome}</a>`;
                 })
             })
         })

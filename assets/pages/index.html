@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conexões</title>
-
+    <title>EcoPower</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -29,18 +28,12 @@
         </div>
     </header>
 
-    <h1>Conexões</h1>
+    <div id="conteudo">Carregando dados...</div>
+    <!-- <script src="{{ url_for('static', filename='js/conteudo.js') }}"></script> -->
 
-    <div class="conexoes">
-        <a href="https://t.me/EcoPowerMainBot" target="_blank">Bot Telegram</a>
-
-        <a href="https://alexa.amazon.com" target="_blank">Alexa</a>
-
-        <a href="/">Voltar para a página inicial</a>
-
-    </div>
-
-
+    <div id="previsao">Carregando previsão...</div>
+    <!-- <script src="{{ url_for('static', filename='js/previsao.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 

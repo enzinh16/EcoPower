@@ -57,6 +57,11 @@ canvas {
 
 #dispositivos {
     background-color: #ecf0f1;
+    padding: 10px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .conexoes {
@@ -194,5 +199,5 @@ a {
 }
 
 a:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
 }
