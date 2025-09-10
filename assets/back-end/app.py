@@ -52,6 +52,28 @@ def ler_json():
 
     return jsonify(dados)
 
+
+@app.route("/atualizar-json", methods=["POST"])
+def atualizar_json():
+    dispositivo = request.json  # objeto enviado do front
+
+    # lê todos os dispositivos existentes
+    with open(ARQUIVO_JSON, "r") as f:
+        dados = json.load(f)
+
+    # procura e atualiza só aquele com o mesmo id
+    for d in dados:
+        if d["id"] == dispositivo["id"]:
+            d["nome"] = dispositivo["nome"]
+            d["prioridade"] = dispositivo["prioridade"]
+            break  # já achou, pode sair do loop
+
+    # salva a lista inteira de volta
+    with open(ARQUIVO_JSON, "w") as f:
+        json.dump(dados, f, indent=4)
+
+    return jsonify({"status": "ok", "mensagem": "Dispositivo atualizado!"})
+
 @app.route("/dados")
 def get_dados():
     inverter_sn = request.args.get("sn", "53600ERN238W0001")

@@ -24,6 +24,6 @@ def dispositivo():
 def graficos():
     return render_template("graficos.html")
 
-@html_bp.route("/teste")
-def teste():
+@html_bp.route("/json")
+def json():
     return render_template("teste.html")
