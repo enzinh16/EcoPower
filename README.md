@@ -15,7 +15,6 @@ venv\Scripts\activate
 3. Instale as dependências:
 ```bash
 pip install -r requirements.txt
-pip install --upgrade pyopenssl cryptography
 ```
 
 4. Inicie o servidor Flask:
