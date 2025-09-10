@@ -31,11 +31,23 @@
 
     <h1>Gráficos</h1>
 
+    <label for="dataFiltro">Escolha a data:</label>
+    <input type="date" id="dataFiltro" value="2025-09-09">
+    <button id="btnFiltrar">Filtrar</button>
+
     <div id="detalhes">Carregando...</div>
 
-    <canvas id="graficoBateria" width="800" height="150"></canvas>
-    <canvas id="graficoPac" width="800" height="150"></canvas>
-    <canvas id="graficoEday" width="800" height="150"></canvas>
+    <div>
+        <canvas id="graficoBateria" width="800" height="150"></canvas>
+    </div>
+
+    <div>
+        <canvas id="graficoPac" width="800" height="150"></canvas>
+    </div>
+    
+    <div>
+        <canvas id="graficoEday" width="800" height="150"></canvas>
+    </div>
     
     <script src="{{ url_for('static', filename='js/graficos.js') }}"></script>
     
