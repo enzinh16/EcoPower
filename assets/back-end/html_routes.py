@@ -23,3 +23,7 @@ def dispositivo():
 @html_bp.route("/graficos")
 def graficos():
     return render_template("graficos.html")
+
+@html_bp.route("/teste")
+def teste():
+    return render_template("teste.html")

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GoodWe Assistant - HTML</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class ="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="EcoPowerMain Logo" title="EcoPowerMain Logo">
+
+        <h1 id="inicio">EcoPower</h1>
+    </div>
+
+    <header>
+        <div class="opcoes">
+            <a href="/">Início</a>
+
+            <a href="/dispositivos">Dispositivos</a>
+
+            <a href="/conexoes">Conexões</a>
+
+            <a href="/graficos">Gráficos</a>
+        </div>
+    </header>
+
+    <h1>Gráficos</h1>
+
+    <div class="kpis">
+        <div class="kpi">
+            <h3>Energia do dia</h3>
+            <p id="energia">—</p>
+        </div>
+        <div class="kpi">
+            <h3>Pico de potência</h3>
+            <p id="pico">—</p>
+        </div>
+        <div class="kpi">
+            <h3>Bateria</h3>
+            <p id="bateria">—</p>
+        </div>
+    </div>
+
+    <canvas id="graficoPac" width="600" height="300"></canvas>
+    <canvas id="graficoSOC" width="600" height="300"></canvas>
+
+    <button onclick="baixarCSV()">⬇️ Baixar CSV</button>
+
+    <script>
+        async function carregarDados() {
+            const fixedDate = "2025-09-10"; // Data fixa para teste
+            const serialNumber = "53600ERN238W0001";
+            const urlPac = `http://localhost:5000/dados?sn=${serialNumber}&col=Pac&date=${fixedDate}`;
+            const urlCbattery1 = `http://localhost:5000/dados?sn=${serialNumber}&col=Cbattery1&date=${fixedDate}`;
+            const urlEday = `http://localhost:5000/dados?sn=${serialNumber}&col=Eday&date=${fixedDate}`;
+
+            try {
+                // Requisição para Pac
+                const respPac = await fetch(urlPac);
+                const payloadPac = await respPac.json();
+                const dfPac = payloadPac.data?.items || payloadPac.data?.column1 || [];
+
+                // Requisição para Eday
+                const respEday = await fetch(urlEday);
+                const payloadEday = await respEday.json();
+                const dfEday = payloadEday.data?.items || payloadEday.data?.column1 || [];
+
+                // Requisição para Cbattery1
+                const respSoc = await fetch(urlCbattery1);
+                const payloadSoc = await respSoc.json();
+                const dfSoc = payloadSoc.data?.items || payloadSoc.data?.column1 || [];
+
+                // Converte tempo e valores
+                const times = dfPac.map(d => new Date(d.time || d.date));
+                const pac = dfPac.map(d => d.Pac ?? d.column ?? null);
+                const eday = dfEday.map(d => d.Eday ?? d.column ?? null);
+                const soc = dfSoc.map(d => d.Cbattery1 ?? d.column ?? null);
+
+                // Combina os dados para o CSV
+                const combinedData = dfPac.map((d, i) => ({
+                    time: times[i],
+                    Pac: pac[i],
+                    Eday: eday[i],
+                    Cbattery1: soc[i]
+                }));
+
+                // KPIs
+                const energiaDia = eday.filter(v => v != null).pop() || 0;
+                const picoP = Math.max(...pac.filter(v => v != null));
+                const idxPico = pac.indexOf(picoP);
+                const horaPico = idxPico >= 0 ? times[idxPico].toLocaleTimeString("pt-BR") : "—";
+                const socIni = soc.find(v => v != null);
+                const socFim = soc.reverse().find(v => v != null);
+
+                document.getElementById("energia").innerText = energiaDia.toFixed(2) + " kWh";
+                document.getElementById("pico").innerText = (picoP !== -Infinity ? picoP.toFixed(2) : '0.00') + " kW (" + horaPico + ")";
+                document.getElementById("bateria").innerText = (socIni !== undefined ? socIni + "%" : "—") + " → " + (socFim !== undefined ? socFim + "%" : "—");
+
+                // Gráfico Pac
+                new Chart(document.getElementById("graficoPac"), {
+                    type: "line",
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: "Potência (Pac)",
+                            data: pac,
+                            borderColor: "blue",
+                            fill: false
+                        }]
+                    },
+                    options: { scales: { x: { type: "time", time: { unit: "hour" } } } }
+                });
+
+                // Gráfico SOC
+                new Chart(document.getElementById("graficoSOC"), {
+                    type: "line",
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: "Bateria SOC (%)",
+                            data: soc,
+                            borderColor: "green",
+                            fill: false
+                        }]
+                    },
+                    options: { scales: { x: { type: "time", time: { unit: "hour" } } } }
+                });
+
+                // Salvar CSV
+                window._csv = "time,Pac,Eday,Cbattery1\n" +
+                    combinedData.map(d => `${d.time.toISOString()},${d.Pac || ""},${d.Eday || ""},${d.Cbattery1 || ""}`).join("\n");
+            } catch (e) {
+                console.error("Erro ao carregar os dados:", e);
+                alert("Erro ao carregar os dados. Verifique se o servidor Python está rodando e se as credenciais estão corretas.");
+            }
+        }
+
+        function baixarCSV() {
+            if (!window._csv) {
+                alert("Nenhum dado para baixar. Carregue os dados primeiro.");
+                return;
+            }
+            const blob = new Blob([window._csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "goodwe_dados.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarDados);
+    </script>
+
+</body>
+
+</html>
