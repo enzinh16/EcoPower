@@ -1,12 +1,11 @@
 let chartBateria, chartPac, chartEday;
 
-async function carregarDados(dataSelecionada) {
-    const serialNumber = "53600ERN238W0001";
+async function carregarDados(dataSelecionada, serialNumber) {
+    // const serialNumber = serialNumber;
     const dataFormatada = dataSelecionada; // já está no formato "YYYY-MM-DD"
-
-    const urlPac = `http://localhost:5000/dados?sn=${serialNumber}&col=Pac&date=${dataFormatada}`;
-    const urlCbattery1 = `http://localhost:5000/dados?sn=${serialNumber}&col=Cbattery1&date=${dataFormatada}`;
-    const urlEday = `http://localhost:5000/dados?sn=${serialNumber}&col=Eday&date=${dataFormatada}`;
+    const urlPac = `${window.location.origin}/dados?sn=${serialNumber}&col=Pac&date=${dataFormatada}`;
+    const urlCbattery1 = `${window.location.origin}/dados?sn=${serialNumber}&col=Cbattery1&date=${dataFormatada}`;
+    const urlEday = `${window.location.origin}/dados?sn=${serialNumber}&col=Eday&date=${dataFormatada}`;
 
     try {
         // ---------- Bateria ----------
@@ -113,9 +112,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputData = document.getElementById("dataFiltro");
     const btnFiltrar = document.getElementById("btnFiltrar");
 
-    carregarDados(inputData.value);
+    // Carrega inicialmente com o inversor selecionado (Inversor 1 por padrão)
+    let inversorAtual = document.querySelector("input[name='inversor']:checked").value;
+    carregarDados(inputData.value, inversorAtual);
 
+    // Atualiza ao mudar seleção
+    document.querySelectorAll("input[name='inversor']").forEach(input => {
+        input.addEventListener("change", () => {
+            inversorAtual = input.value;
+            carregarDados(inputData.value, inversorAtual);
+        });
+    });
+
+    // Atualiza quando filtrar pela data
     btnFiltrar.addEventListener("click", () => {
-        carregarDados(inputData.value);
+        carregarDados(inputData.value, inversorAtual);
     });
 });

@@ -1,8 +1,8 @@
 // Primeiro script: carregarDados
 async function carregarDados() {
     try {
-        const resposta = await fetch('http://localhost:5000/detalhes-usina?plantId=7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a');
-        const resposta2 = await fetch('http://localhost:5000/detalhes-monitor?plantId=7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a');
+        const resposta = await fetch(`${window.location.origin}/detalhes-usina?plantId=7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a`);
+        const resposta2 = await fetch(`${window.location.origin}/detalhes-monitor?plantId=7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a`);
 
         const dados = await resposta.json();
         const dados2 = await resposta2.json();
@@ -64,7 +64,7 @@ async function carregarDados() {
 // Segundo script: carregarPrevisao
 async function carregarPrevisao(plantId) {
     try {
-        const response = await fetch(`http://localhost:5000/previsao-tempo?plantId=${plantId}`);
+        const response = await fetch(`${window.location.origin}/previsao-tempo?plantId=${plantId}`);
         if (!response.ok) throw new Error("Erro ao buscar previsão do tempo");
 
         const data = await response.json();
