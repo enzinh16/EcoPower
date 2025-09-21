@@ -4,7 +4,7 @@
 
 2. Crie e ative o ambiente virtual:
 ```bash
-virtualenv venv -p
+python -m venv .venv
 venv\Scripts\activate
 ```
 
