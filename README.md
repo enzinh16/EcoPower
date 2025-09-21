@@ -1,8 +1,8 @@
 ## 📥 Instalação e Execução
 
-1. Clone o repositório e entre na pasta
+1. Baixe o repositório e entre em sua pasta.
 
-2. Crie e ative o ambiente virtual:
+2. Execute o prompt de comando na pasta do projeto, crie e ative o ambiente virtual:
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
