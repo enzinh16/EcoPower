@@ -5,7 +5,7 @@
 2. Crie e ative o ambiente virtual:
 ```bash
 python -m venv .venv
-venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 3. Instale as dependências (com o venv ativado):
