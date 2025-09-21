@@ -1,6 +1,6 @@
 ## 📥 Instalação e Execução
 
-1. Clone o repositório e entre na pasta:
+1. Clone o repositório e entre na pasta
 
 2. Crie e ative o ambiente virtual:
 ```bash
