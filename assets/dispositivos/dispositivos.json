@@ -2,7 +2,7 @@
     {
         "id": 1,
         "nome": "ar condicionado",
-        "prioridade": 2,
+        "prioridade": 1,
         "consumo": 1500
     },
     {

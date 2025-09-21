@@ -168,4 +168,20 @@ def get_previsao_tempo():
 # -------------------------
 if __name__ == "__main__":
     print("Servidor web iniciado. Acesse http://127.0.0.1:5000/ no navegador.")
+    # 1️⃣ Baixa o JSON direto usando o goodwe_client
+    try:
+        plant_id_demo = "7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a"
+        token = crosslogin(CONFIG["account"], CONFIG["password"], CONFIG["region"])
+        dados_monitor = get_monitor_detail(token, plant_id_demo, region="us")
+
+        arquivo_saida = os.path.join(BASE_DIR, "detalhes_monitor.json")
+        with open(arquivo_saida, "w", encoding="utf-8") as f:
+            json.dump(dados_monitor, f, indent=4, ensure_ascii=False)
+        print(f"JSON de detalhes do monitor salvo em {arquivo_saida}")
+    except Exception as e:
+        print(f"Falha ao baixar detalhes do monitor: {e}")
+
+    # 2️⃣ Depois inicia o servidor Flask normalmente
+    print("Servidor web iniciado. Acesse http://127.0.0.1:5000/ no navegador.")
+    app.run(host="0.0.0.0", port=5000, debug=True)
     app.run(host="0.0.0.0", port=5000, debug=True)
