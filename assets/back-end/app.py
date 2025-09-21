@@ -2,7 +2,7 @@
 # -------------------------------------------------------------------
 # Servidor Flask unificado: HTML + API GoodWe
 # -------------------------------------------------------------------
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request
 import json
 from flask_cors import CORS
 import os
@@ -24,7 +24,7 @@ try:
     CONFIG = client_from_env()
 except RuntimeError as e:
     CONFIG = {}
-    print(f"Aviso: {e}. Usando credenciais demo.")
+    print(f"Aviso: {e}. Usando credenciais fornecidas pela Goodwe.")
     CONFIG["account"] = "ecopower.management@gmail.com"
     CONFIG["password"] = "Goodwe2018"
     CONFIG["region"] = "us"
@@ -32,10 +32,6 @@ except RuntimeError as e:
 # Registra o blueprint das rotas HTML
 app.register_blueprint(html_bp)
 
-# -------------------------
-# Rotas da API GoodWe
-# -------------------------
-# Caminho absoluto do arquivo JSON
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # pasta do app.py
 ARQUIVO_JSON = os.path.join(BASE_DIR, "../dispositivos/dispositivos.json")
 
@@ -55,20 +51,17 @@ def ler_json():
 
 @app.route("/atualizar-json", methods=["POST"])
 def atualizar_json():
-    dispositivo = request.json  # objeto enviado do front
+    dispositivo = request.json
 
-    # lê todos os dispositivos existentes
     with open(ARQUIVO_JSON, "r") as f:
         dados = json.load(f)
 
-    # procura e atualiza só aquele com o mesmo id
     for d in dados:
         if d["id"] == dispositivo["id"]:
             d["nome"] = dispositivo["nome"]
             d["prioridade"] = dispositivo["prioridade"]
-            break  # já achou, pode sair do loop
+            break
 
-    # salva a lista inteira de volta
     with open(ARQUIVO_JSON, "w") as f:
         json.dump(dados, f, indent=4)
 
@@ -163,12 +156,9 @@ def get_previsao_tempo():
     except Exception as e:
         return jsonify({"error": "Falha ao buscar previsão do tempo", "details": str(e)}), 500
 
-# -------------------------
 # Inicialização do servidor
-# -------------------------
 if __name__ == "__main__":
-    print("Servidor web iniciado. Acesse http://127.0.0.1:5000/ no navegador.")
-    # 1️⃣ Baixa o JSON direto usando o goodwe_client
+    # Baixa o JSON direto usando o goodwe_client
     try:
         plant_id_demo = "7f9af1fc-3a9a-4779-a4c0-ca6ec87bd93a"
         token = crosslogin(CONFIG["account"], CONFIG["password"], CONFIG["region"])
@@ -181,7 +171,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Falha ao baixar detalhes do monitor: {e}")
 
-    # 2️⃣ Depois inicia o servidor Flask normalmente
+    # Depois inicia o servidor Flask normalmente
     print("Servidor web iniciado. Acesse http://127.0.0.1:5000/ no navegador.")
-    app.run(host="0.0.0.0", port=5000, debug=True)
     app.run(host="0.0.0.0", port=5000, debug=True)
